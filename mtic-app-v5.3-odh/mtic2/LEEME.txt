@@ -1,0 +1,61 @@
+NOVEDAD: ODH (programa aparte de 7K)
+- En el inicio hay dos secciones: "7K" (los tres formatos de siempre, sin cambios) y "ODH".
+- ODH trae su propia semilla (Semilla_ODH.xlsx, 289 sedes): al escribir el IB se completan resolucion, ID CLARO,
+  codigos DANE, nombre de la institucion y de la sede.
+- ODH tiene por ahora el formato Correctivo MTI-F08. Nombre del archivo:
+  IDBen_<IB>-IM<caso>-<DD-MM-AAAA>_Notificacion_de_mantenimiento_Correctivo_del_Contratista.xlsx
+- Archivos nuevos: www/semilla-odh.js, www/eq-odh.js, www/templates-odh.js, www/forms-odh.js, www/app-odh.js.
+- Cambios minimos en lo existente: xl.js (opcion de fuente por plantilla), app-photos.js (ranuras de ODH),
+  app-screens.js (el historial muestra los archivos ODH) e index.html (scripts nuevos).
+
+APP MINTIC MANTENIMIENTOS v5 (preventivo MTIC-F27, correctivo MTIC-F40 y parada de reloj MTIC-F29)
+
+COMO OBTENER EL APK
+1. En tu repositorio de GitHub borra los archivos anteriores y sube TODO el contenido de esta carpeta
+   (incluidas la carpeta oculta .github y la carpeta native).
+2. Actions > "Generar APK" > Run workflow. Tarda unos 5 a 8 minutos.
+3. Descarga mtic-apk, pasa app-debug.apk al celular e instalalo.
+   Desinstala antes la version anterior (cada APK de GitHub lleva una firma distinta).
+   La primera vez acepta los permisos de camara y ubicacion.
+
+NOVEDADES V5
+- Lector de QR y codigos de barras nativo (ZXing, com.journeyapps:zxing-android-embedded 4.3.0). Se usa en el
+  inicio y en cada campo de serial. Abre en vertical, con sonido y linterna. Si el lector nativo no esta
+  disponible, la app usa el lector anterior como respaldo.
+- La version minima de Android pasa a 7.0 (API 24), requisito de la libreria.
+- Archivos nuevos en native/: ScanPlugin.java y CaptureActivityPortrait.java. El flujo de GitHub agrega las
+  dependencias, el permiso y la actividad del lector (paso "Lector de codigos").
+  Si la compilacion falla por este lector: borra native/ScanPlugin.java, native/CaptureActivityPortrait.java,
+  la linea registerPlugin(ScanPlugin.class) de native/MainActivity.java y el paso "Lector de codigos" de
+  .github/workflows/apk.yml. La app seguira usando el lector anterior.
+
+NOVEDADES V4
+- Nuevo formato: Parada de reloj (hasta 4 paradas; cada causa solo se puede usar una vez porque la plantilla
+  tiene una fila por causa; marca la casilla del numero de parada). Nombre: IDBen_<ID>-IM<caso>-<aaaa-mm-dd>_Paradas_de_Reloj.xlsx
+- Al inicio de cada formato eliges si las fotos van sobre las celdas o dentro de la celda.
+- En pruebas necesarias del correctivo, los espacios que son solo capturas solo permiten subir la imagen (sin marca de agua).
+- Todos los espacios de foto tienen boton N/A y ese N/A se inserta como imagen en el Excel.
+- Texto en negro, fuente Calibri y alineaciones corregidas en los Excel exportados.
+
+NOVEDADES V3
+- Inicio: escribes el IB y eliges Solo preventivo, Solo correctivo o los dos. El IB se usa en todo el formato.
+  Con los dos se muestra el preventivo y se le anexan los apartados del correctivo; al final generas los dos
+  Excel. Las fotos de pruebas que ya tomaste en el preventivo se reutilizan en el correctivo.
+- Registro de sitios: por IB y, dentro de cada IB, por tipo (preventivo o correctivo). Cada Excel exportado
+  queda guardado ahi para compartirlo de nuevo.
+- Opciones: perfil (se aplica solo a los datos del tecnico), camara (app integrada, camara del telefono o una
+  de las apps de camara instaladas), tamano de fotos (original o porcentaje), backup completo (exportar y
+  cargar), limpiar cache y limpieza total.
+- Lector de QR y codigos de barras: en el inicio y en cada campo de serial (boton Escanear). Tambien se
+  puede escribir a mano o leer desde una imagen.
+- GPS en vivo: la app lee las coordenadas del telefono sola y las usa en la marca de agua de cada foto.
+
+NOTA SOBRE LA LISTA DE APPS DE CAMARA
+La lista de apps instaladas y la apertura de una app de camara concreta usan un plugin nativo
+(carpeta native/, lo copia el flujo de GitHub). Si el flujo falla en el paso de compilacion por ese
+plugin, borra la carpeta native y las lineas "Plugin nativo de camara" del archivo .github/workflows/apk.yml:
+la app sigue funcionando con la camara integrada y la del telefono.
+
+PLANTILLAS Y SEMILLA
+- Plantillas: www/templates.js (Excel en base64, claves prev, corr y par).
+- Semilla: www/semilla.js (ID -> municipio, departamento, centro poblado, sede, ID MinTIC).
